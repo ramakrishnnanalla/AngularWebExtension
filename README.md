@@ -1,5 +1,17 @@
 # MyExtension
 
+to add the clientId, Tenant and ClientSecret, Create a folder in the src folder named environments
+and In the environments folder create file with name `environment.ts` and add the following code
+`export const environment = {
+  production: false,
+  azureAd: {
+    clientId: 'YOUR_CLIENT_ID',
+    tenantId: 'YOUR_TENANT_ID',
+    clientSecret: 'YOUR_CLIENT_SECRET'
+  }
+};`
+Replace the values with original values
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.0.
 
 ## Development server
