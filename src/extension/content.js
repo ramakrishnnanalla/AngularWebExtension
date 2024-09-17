@@ -15,7 +15,7 @@ container.style.padding = '10px'; // Add some padding around the iframe
 const iframe = document.createElement('iframe');
 iframe.src = chrome.runtime.getURL('index.html');
 iframe.style.border = 'none';
-iframe.style.width = '300px';
+iframe.style.width = '700px';
 iframe.style.height = '200px';
 iframe.style.backgroundColor = 'transparent'; // Make iframe background transparent
 

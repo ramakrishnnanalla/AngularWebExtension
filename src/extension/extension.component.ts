@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
+import { Router } from '@angular/router';
 
 declare const chrome: any;
 
@@ -16,7 +17,9 @@ export class ExtensionComponent implements OnInit  {
   private tenantId: string;
   private clientSecret: string;
 
-  constructor() { 
+  constructor(
+    private router: Router
+  ) { 
     this.clientId = environment.azureAd.clientId;
     this.tenantId = environment.azureAd.tenantId;
     this.clientSecret = environment.azureAd.clientSecret;
@@ -38,33 +41,35 @@ export class ExtensionComponent implements OnInit  {
       `client_id=${this.clientId}` +
       `&response_type=code` +
       `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-      `&scope=${encodeURIComponent(scope)}` +
-      `&response_mode=fragment`;
+      `&scope=${encodeURIComponent(scope)}`
+    
+    console.log('authUrl: ', authUrl)
+    window.open(authUrl, '_blank');
 
-    chrome.identity.launchWebAuthFlow(
-      { url: authUrl, interactive: true },
-      async (responseUrl: string) => {
-        if (chrome.runtime.lastError) {
-          console.error(chrome.runtime.lastError);
-          return;
-        }
+    // chrome.identity.launchWebAuthFlow(
+    //   { url: authUrl, interactive: true },
+    //   async (responseUrl: string) => {
+    //     if (chrome.runtime.lastError) {
+    //       console.error(chrome.runtime.lastError);
+    //       return;
+    //     }
 
-        const urlParams = new URLSearchParams(responseUrl.split('#')[1]);
-        const code = urlParams.get('code');
+    //     const urlParams = new URLSearchParams(responseUrl.split('#')[1]);
+    //     const code = urlParams.get('code');
 
-        if (code) {
-          try {
-            const tokenResponse = await this.getAccessToken(code, this.clientId, redirectUri, this.tenantId, this.clientSecret);
-            console.log('Access Token:', tokenResponse.access_token);
-            // Use the access token to make API requests
-          } catch (error) {
-            console.error('Error getting access token:', error);
-          }
-        } else {
-          console.error('Authentication failed');
-        }
-      }
-    );
+    //     if (code) {
+    //       try {
+    //         const tokenResponse = await this.getAccessToken(code, this.clientId, redirectUri, this.tenantId, this.clientSecret);
+    //         console.log('Access Token:', tokenResponse.access_token);
+    //         // Use the access token to make API requests
+    //       } catch (error) {
+    //         console.error('Error getting access token:', error);
+    //       }
+    //     } else {
+    //       console.error('Authentication failed');
+    //     }
+    //   }
+    // );
   }
 
   async getAccessToken(code: string, clientId: string, redirectUri: string, tenantId: string, clientSecret: string): Promise<any> {
@@ -88,9 +93,12 @@ export class ExtensionComponent implements OnInit  {
     if (!response.ok) {
       throw new Error('Failed to get access token');
     }
-
     return response.json();
   }
 
+  changeRoute() {
+    console.log('changed route');
+    this.router.navigate(['/test']);
+  }
 
 }
